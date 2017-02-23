@@ -1,0 +1,101 @@
+<html>
+	<head>
+	<title>Modal Window POC</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+	
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	</head>
+	
+	
+	
+
+<body>
+   <div="container">
+   
+   <div>
+      <input type="text" id="accountId" />
+   </div>
+   
+   
+	<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+	    Launch Accounts
+	</button>
+
+	<!-- Modal -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<!-- <div class="modal-dialog" role="document" style="overflow-y: scroll; max-height:85%;  margin-top: 50px; margin-bottom:50px;"> -->
+		 <div class="modal-dialog" role="document"> 
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">Account Details</h4>
+				</div>
+				<div class="modal-body">				   
+				   <table class="table table-striped table-hover">
+<!-- 				       <thead>
+				          <tr><th>Account Details</th></tr>
+				       </thead>
+ -->					  <tbody id="tableforaccounts">
+                              <tr id="loadmessage"><td>Loading...</td></tr>
+					      </tbody>
+				   </table>
+				   
+				</div>
+				<div class="modal-footer">
+					<button type="button" id="btnSave" class="btn btn-primary">Save changes</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal" width="100%">Close</button>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+   <script>
+   
+      function onAccountSelect(accountNumber) {
+
+    	  $('#accountId').val(accountNumber);
+   	      $('#myModal').modal('hide');    	    
+      }
+   
+      $(function() {
+	   
+	   /*
+	   $('#btnLaunch').click(function() {
+		    $('#myModal').modal('show');
+		});
+	   */
+	   	   
+	   $.get("accounts")
+	     .done(function(accounts) {
+		 	   $.each(accounts,  function(i,data) {
+		           $("#tableforaccounts").append("<tr onclick='onAccountSelect("+ data + ")'><td>" + data + "</td></tr>");
+               })
+	     })
+         .fail(function(response) {
+        	 //var data = $.parseJSON(response.responseText);
+        	 var error = JSON.parse(response.responseText);
+        	 $("#tableforaccounts").append("<tr><td>" + error.message + "</td></tr>");
+            })
+         .always(function() {
+        	 $('#loadmessage').hide();
+         });
+   });
+     
+   </script>
+</body>
+</html>
